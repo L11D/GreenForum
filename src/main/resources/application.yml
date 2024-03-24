@@ -1,0 +1,5 @@
+#spring.application.name=GreenForum
+spring:
+  jpa:
+    show-sql: true
+    hibernate.dll-auto: create
