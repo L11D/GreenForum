@@ -1,5 +1,11 @@
 #spring.application.name=GreenForum
 spring:
+  jwt:
+    secret: 12345678qwertyui12345678qwertyui12345678qwertyui
+    lifetime: 30m
+
+  datasource: jdbc:h2:mem:db; DB_CLOSE_DELAY=-1
+
   jpa:
     show-sql: true
     hibernate.dll-auto: create
