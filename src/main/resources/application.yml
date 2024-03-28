@@ -4,8 +4,19 @@ spring:
     secret: 12345678qwertyui12345678qwertyui12345678qwertyui
     lifetime: 30m
 
-  datasource: jdbc:h2:mem:db; DB_CLOSE_DELAY=-1
+  datasource:
+    url: jdbc:postgresql://localhost:5432/green-db
+    username: postgres
+    password: 1111
+#    url: jdbc:h2:mem:green-db
+#    driverClassName: org.h2.Driver
+
+  flyway:
+    enabled: true
+    locations:
+      - db.migration
 
   jpa:
     show-sql: true
-    hibernate.dll-auto: create
+    hibernate:
+      ddl-auto: validate

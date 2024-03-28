@@ -1,6 +1,7 @@
 package com.liid.greenforum.service.impl;
 
 
+import com.liid.greenforum.entity.TopicEntity;
 import com.liid.greenforum.entity.UserEntity;
 import com.liid.greenforum.exception.NotFoundException;
 import com.liid.greenforum.exception.UserAlreadyExistException;
@@ -74,6 +75,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     public boolean userExist(UUID id){
         return userRepository.findById(id).isPresent();
+    }
+
+    @SneakyThrows
+    public UserEntity findUserById(UUID id){
+        return userRepository.findById(id).orElseThrow(
+                ()-> new NotFoundException("User not found")
+        );
     }
 
 
