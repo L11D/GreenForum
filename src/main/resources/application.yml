@@ -1,5 +1,18 @@
-#spring.application.name=GreenForum
 spring:
+  jwt:
+    secret: 12345678qwertyui12345678qwertyui12345678qwertyui
+    lifetime: 30m
+
+  datasource:
+    url: jdbc:h2:mem:green-db
+    driverClassName: org.h2.Driver
+
+  flyway:
+    enabled: true
+    locations:
+      - db.migration
+
   jpa:
     show-sql: true
-    hibernate.dll-auto: create
+    hibernate:
+      ddl-auto: validate
