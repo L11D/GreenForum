@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(c -> c
                         .requestMatchers("/user/profile").authenticated()
                         .requestMatchers("/topic/create").authenticated()
+                        .requestMatchers("/topic/{id}/*").authenticated()
                         .requestMatchers("/topic/{topicId}/message").authenticated()
                         .anyRequest().permitAll()
                 )

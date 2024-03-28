@@ -23,6 +23,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -165,6 +167,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @SneakyThrows
+    @PreAuthorize("@topicServiceImpl.isOwner(#topicId, authentication) || hasRole('ADMIN')")
     public TopicMessagesDTO edit(EditTopicRequest request, UUID topicId) {
         TopicEntity topic = topicRepository.findById(topicId).orElseThrow(() ->
                 new NotFoundException("Topic not found"));
@@ -174,6 +177,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @SneakyThrows
+    @PreAuthorize("@topicServiceImpl.isOwner(#topicId, authentication) || hasRole('ADMIN')")
     public void delete(UUID topicId) {
         TopicEntity topic = topicRepository.findById(topicId).orElseThrow(() ->
                 new NotFoundException("Topic not found"));
@@ -183,6 +187,14 @@ public class TopicServiceImpl implements TopicService {
             messageService.delete(e.getId());
         }
         topicRepository.delete(topic);
+    }
+
+    @SneakyThrows
+    public boolean isOwner(UUID topicId, Authentication authentication){
+        UUID userId = tokenUtils.getUserIdFromAuthentication(authentication);
+        TopicEntity topic = topicRepository.findById(topicId).orElseThrow(() ->
+                new NotFoundException("Topic not found"));
+        return  userId.equals(topic.getUserCreatorId());
     }
 
     private TopicMessagesDTO topicToDTO(TopicEntity topic, List<MessageDTO> messages){
@@ -213,5 +225,4 @@ public class TopicServiceImpl implements TopicService {
                 messageDTOS
         );
     }
-
 }

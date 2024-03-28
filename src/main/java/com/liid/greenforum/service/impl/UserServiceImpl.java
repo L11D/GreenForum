@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             );
         }
 
-        UserEntity user = UserEntity.of(null, registrationRequest.email(), registrationRequest.nickname(), registrationRequest.password(), registrationRequest.name());
+        UserEntity user = UserEntity.of(null, registrationRequest.email(), registrationRequest.nickname(), registrationRequest.password(), registrationRequest.name(), "ROLE_USER");
         UserEntity savedUser = userRepository.save(user);
         String token = tokenUtils.generateToken(savedUser);
         return new JwtResponse(token);

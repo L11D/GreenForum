@@ -1,5 +1,7 @@
 package com.liid.greenforum.config;
 
+import com.liid.greenforum.entity.UserEntity;
+import com.liid.greenforum.exception.NotFoundException;
 import com.liid.greenforum.repository.UserRepository;
 import com.liid.greenforum.utils.JwtTokenUtils;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -43,9 +46,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //                        SecurityContextHolder.getContext().setAuthentication(token);
 //                    }
 //                }
+                UserEntity user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+
                 if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                            userId, null, Collections.emptyList()
+                            userId, null, user.getAuthorities()
                     );
                     SecurityContextHolder.getContext().setAuthentication(token);
                 }

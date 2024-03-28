@@ -17,7 +17,6 @@ public interface TopicService {
     TopicMessagesDTO createMessage(UUID topicId, @Valid CreateMessageRequest request, Authentication authentication);
     TopicMessagesDTO editMessage(UUID topicId, @Valid EditMessageRequest request);
     void deleteMessage(UUID topicId, UUID messageId);
-
     TopicMessagePaginationDTO getTopicsMessages(UUID topicId, SortingValuesMessage sorting, @Valid @Min(1) int pageSize, @Valid @Min(0) int page);
     TopicsPaginationDTO getTopics(SortingValues sorting, @Valid @Min(1) int pageSize, @Valid @Min(0) int page);
     TopicMessagesDTO create(@Valid CreateTopicRequest request, Authentication authentication);

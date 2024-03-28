@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -108,6 +109,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @SneakyThrows
+    @PreAuthorize("@messageServiceImpl.isOwner(#request.id(), authentication) || hasRole('ADMIN')")
     public void edit(@Valid EditMessageRequest request) {
         MessageEntity message = messageRepository.findById(request.id()).orElseThrow(() ->
                 new NotFoundException("Message not found"));
@@ -117,9 +119,18 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @SneakyThrows
+    @PreAuthorize("@messageServiceImpl.isOwner(#messageId, authentication) || hasRole('ADMIN')")
     public void delete(UUID messageId) {
         MessageEntity message = messageRepository.findById(messageId).orElseThrow(() ->
                 new NotFoundException("Message not found"));
         messageRepository.delete(message);
+    }
+
+    @SneakyThrows
+    public boolean isOwner(UUID messageId, Authentication authentication){
+        UUID userId = tokenUtils.getUserIdFromAuthentication(authentication);
+        MessageEntity message = messageRepository.findById(messageId).orElseThrow(() ->
+                new NotFoundException("Topic not found"));
+        return  userId.equals(message.getUserCreatorId());
     }
 }
